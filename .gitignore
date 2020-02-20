@@ -1,0 +1,4 @@
+data/*
+out/*
+*.zip
+*.pyc
