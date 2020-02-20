@@ -11,11 +11,11 @@ class Problem(object):
         self.books = [ Book(i,int(score)) for i, score in enumerate(f.readline().split(' '))]
         self.book2Score = {book.id: int(book.score) for book in self.books}
         self.libs = []
-        for i in range(self.nLibs):
+        for libId in range(self.nLibs):
             l = [int(i) for i in f.readline().split(' ')]
             nBooks, nSign, nScan = l[0], l[1], l[2]
             books = [ Book(int(i), int(self.book2Score[int(i)])) for i in f.readline().split(' ') ] 
-            lib = Library(i, nBooks, nSign, nScan, books)
+            lib = Library(libId, nBooks, nSign, nScan, books)
             self.libs.append(lib) 
         self.pri()
 
@@ -24,14 +24,17 @@ class Problem(object):
         solution = []
         readBookSet  = set()
         while t < self.nDays:
+            print('-----', t)
             scoreList = []
+            readBookList = []
             for lib in self.libs:
                 if lib.registered == False:
-                    scoreList.append(
-                        lib.predMaxScore(self.nDays - t) 
-                    )
+                    score, curBookList = lib.predMaxScore(self.nDays - t, readBookSet)
+                    scoreList.append( score )
+                    readBookList.append( curBookList )
                 else:
                     scoreList.append(0)
+                    readBookList.append( [ ] )
             if len(scoreList) == 0:
                 break
             if max(scoreList) == 0:
@@ -39,6 +42,8 @@ class Problem(object):
             libIndex = scoreList.index(max(scoreList))
             self.libs[libIndex].registeredDay = t
             self.libs[libIndex].registered = True
+            self.libs[libIndex].solBooks = readBookList[libIndex]
+            readBookSet = readBookSet.union(readBookList[libIndex])
             solution.append(self.libs[libIndex])
             t += self.libs[libIndex].nSign
         print([(lib.id, lib.nSign, lib.registeredDay) for lib in solution])
@@ -48,7 +53,7 @@ class Problem(object):
         f = open(self.filename.replace('data/', 'out/'), 'w+')
         f.write('{}\n'.format(len(solution)))
         for lib in solution:
-            books = lib.getSol(self.nDays)
+            books = lib.solBooks
             f.write('{} {}\n'.format(
                 lib.id, len(books)
             ))
@@ -70,9 +75,9 @@ class Problem(object):
 
 if __name__ == "__main__":
     
-    p = Problem('data/a.txt')
-    solution = p.solve()
-    p.dump(solution)
+    # p = Problem('data/a.txt')
+    # solution = p.solve()
+    # p.dump(solution)
 
 
     # p = Problem('data/b.txt')
@@ -85,9 +90,9 @@ if __name__ == "__main__":
     # p.dump(solution)
 
 
-    # p = Problem('data/d.txt')
-    # solution = p.solve()
-    # p.dump(solution)
+    p = Problem('data/d.txt')
+    solution = p.solve()
+    p.dump(solution)
 
 
     # p = Problem('data/e.txt')
@@ -95,11 +100,7 @@ if __name__ == "__main__":
     # p.dump(solution)
 
 
-    p = Problem('data/f.txt')
-    solution = p.solve()
-    p.dump(solution)
-    #p = Problem('data/b.txt')
-    #p = Problem('data/c.txt')
-    #p = Problem('data/d.txt')
-    
-    #solve()
+    # p = Problem('data/f.txt')
+    # solution = p.solve()
+    # p.dump(solution)
+  
