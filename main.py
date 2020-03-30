@@ -4,11 +4,16 @@ import numpy as np
 
 class Problem(object):
     def __init__(self, filename):
+        print('file--', filename)
         f = open(filename)
         l = f.readline().split(' ')
         self.filename = filename
         self.nBooks, self.nLibs, self.nDays = int(l[0]), int(l[1]), int(l[2])
         self.books = [ Book(i,int(score)) for i, score in enumerate(f.readline().split(' '))]
+        sumb = 0
+        for b in self.books:
+            sumb += b.score
+        print( sumb/1000000 )
         self.book2Score = {book.id: int(book.score) for book in self.books}
         self.libs = []
         for libId in range(self.nLibs):
@@ -74,6 +79,13 @@ class Problem(object):
 
 
 if __name__ == "__main__":
+
+    # p = Problem('data/a.txt')
+    # p = Problem('data/b.txt')
+    # p = Problem('data/c.txt')
+    # p = Problem('data/d.txt')
+    # p = Problem('data/e.txt')
+    # p = Problem('data/f.txt')
     
     # p = Problem('data/a.txt')
     # solution = p.solve()

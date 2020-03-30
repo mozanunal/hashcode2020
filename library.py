@@ -29,15 +29,7 @@ class Library(object):
         readBooksId=[book.id for book in self.tempBooks[:bookCap]]
         for book in readBooks:
             sumScore += book.score
-        return sumScore, readBooksId
-
-    def getSol(self, nDays):
-        restDays  = nDays - self.nSign
-        if restDays < 0:
-            return 0
-        bookCap = restDays*self.nScan
-        readBooksId=[book.id for book in self.books[:bookCap]]
-        return readBooksId
+        return float(sumScore)/(float(self.nSign)**2), readBooksId
 
     def __repr__(self):
         return "Lib[{}:{}:{}--{}]".format(self.nBook, self.nSign, self.nScan, self.books)
